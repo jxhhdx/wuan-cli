@@ -1,0 +1,20 @@
+{
+  "name": "wuan-cli",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linxiang07/wuan-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linxiang07/wuan-cli/issues"
+  },
+  "homepage": "https://github.com/linxiang07/wuan-cli#readme"
+}
