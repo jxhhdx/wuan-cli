@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/linxiang07/wuan-cli/issues"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
