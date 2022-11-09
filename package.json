@@ -1,8 +1,11 @@
 {
   "name": "wuan-cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "wuan-cli": "bin/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
