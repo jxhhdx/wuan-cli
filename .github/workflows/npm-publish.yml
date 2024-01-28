@@ -35,15 +35,10 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
           echo "::set-output name=needs-publish::$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
-      
-      - name: Stop workflow if no update
-        if: steps.check-version.outputs.needs-publish == 'false'
-        run: |
-          echo "No update required"
-          exit 0
 
   publish-npm:
     needs: build
+    if: ${{ needs.build.outputs['check-version'] == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
