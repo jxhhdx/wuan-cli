@@ -1,12 +1,16 @@
 {
   "name": "wuan-cli",
-  "version": "2.0.3",
-  "description": "",
+  "version": "2.0.4",
+  "description": "wuan-cli",
   "main": "index.js",
   "bin": {
     "wuan-cli": "bin/index.js"
   },
   "scripts": {
+    "dev": "father dev",
+    "build": "father build",
+    "build:deps": "father prebundle",
+    "prepublishOnly": "father doctor && npm run build",
     "test": "echo \"success\""
   },
   "repository": {
@@ -14,13 +18,22 @@
     "url": "git+https://github.com/jxhhdx/wuan-cli.git"
   },
   "keywords": [],
-  "author": "",
+  "authors": [
+    "igaoxian@foxmail.com"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jxhhdx/wuan-cli/issues"
   },
-  "homepage": "https://github.com/jxhhdx/wuan-cli#readme",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
-    "lerna": "^3.22.1"
-  }
+    "father": "^4.4.0"
+  },
+  "homepage": "https://github.com/jxhhdx/wuan-cli#readme"
 }
