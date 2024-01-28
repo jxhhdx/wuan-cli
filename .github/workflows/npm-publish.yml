@@ -9,10 +9,8 @@ on:
       - main
 
 jobs:
-  build:
+  publish-npm:
     runs-on: ubuntu-latest
-    outputs:
-      build_id: ${{ steps.build_step.outputs.build_id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,6 +19,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
         run: npm ci
@@ -37,25 +36,14 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
           echo "build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
-      
-  publish-npm:
-    needs: build
-    # if: ${{ needs.build_jobs.outputs['needs-publish'] == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: HHH
+      - name: Publish To Npm
+        run: npm publish
+
+      - name: Create Tag
         run: |
-          echo ${{ needs.build_jobs['outputs']['build_id'] }}
-      # - uses: actions/checkout@v3
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20
-      #     registry-url: https://registry.npmjs.org/
-      # - run: npm ci
-      # - run: npm publish
-      # - run: |
-      #     NEW_VERSION=$(node -p "require('./package.json').version")
-      #     git tag $NEW_VERSION
-      #     git push origin $NEW_VERSION
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          git tag $NEW_VERSION
+          git push origin $NEW_VERSION
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      
