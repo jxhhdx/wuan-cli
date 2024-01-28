@@ -36,14 +36,17 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
           echo "build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
-      - name: Publish To Npm
-        run: npm publish
 
+      - name: Publish To Npm
+        if: ${{ env.build_id == 'true' }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Create Tag
+        if: ${{ env.build_id == 'true' }}
         run: |
           NEW_VERSION=$(node -p "require('./package.json').version")
           git tag $NEW_VERSION
           git push origin $NEW_VERSION
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        
       
