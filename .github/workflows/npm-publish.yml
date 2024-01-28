@@ -36,6 +36,12 @@ jobs:
           echo "Latest version: $LATEST_VERSION"
           echo "::set-output name=needs-publish::$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
           echo "::set-output name=needs-context::${{ toJson(needs) }}"
+
+      - name: Print needs context
+        run: echo "${{ env.needs-context }}"
+        shell: bash
+        env:
+          NEEDS_CONTEXT: ${{ needs.context }}
   publish-npm:
     needs: build
     # if: ${{ needs.build.outputs['needs-publish'] == 'true' }}
