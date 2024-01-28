@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      build_id: ${{ steps.build_step.outputs.build_id }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,7 +36,7 @@ jobs:
           LATEST_VERSION=$(npm show $CURRENT_NAME version)
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
-          echo "::set-output name=needs-publish::$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
+          echo "build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
       
   publish-npm:
     needs: build
@@ -43,7 +45,7 @@ jobs:
     steps:
       - name: HHH
         run: |
-          echo ${{ needs.build['outputs']['publish'] == 'true' }}
+          echo ${{ needs.build['outputs']['build_id'] }}
       # - uses: actions/checkout@v3
       # - uses: actions/setup-node@v3
       #   with:
