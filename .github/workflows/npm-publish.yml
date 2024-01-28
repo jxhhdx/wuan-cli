@@ -37,11 +37,10 @@ jobs:
           echo "Latest version: $LATEST_VERSION"
           build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)
           echo $build_id
-          echo "::set-env name=BUILD_ID::$build_id"
+          echo "::set-output name=BUILD_ID::$build_id"
       - name: Publish To Npm
         run: |
-          echo $build_id
-          if [ $build_id == "true" ];then
+          if [ "${{ steps.check-version.outputs.BUILD_ID }}" == "true" ];then
             npm publish
             NEW_VERSION=$(node -p "require('./package.json').version")
             git tag $NEW_VERSION
