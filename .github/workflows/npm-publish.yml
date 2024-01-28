@@ -39,15 +39,16 @@ jobs:
           echo $build_id
 
       - name: Publish To Npm
-        if: ${{ env.build_id == 'true' }}
-        run: npm publish
+        run: |
+          if [ $build_id == "true" ];then
+            npm publish
+            NEW_VERSION=$(node -p "require('./package.json').version")
+            git tag $NEW_VERSION
+            git push origin $NEW_VERSION
+          else
+            echo "No update required"
+          fi
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - name: Create Tag
-        if: ${{ env.build_id == 'true' }}
-        run: |
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          git tag $NEW_VERSION
-          git push origin $NEW_VERSION
         
       
