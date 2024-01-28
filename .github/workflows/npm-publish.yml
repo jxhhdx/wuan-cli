@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: HHH
         run: |
-          echo ${{ needs.build['check-version']['outputs']['needs-publish'] == 'true' }}
+          echo ${{ needs.build['outputs']['check-version']['needs-publish'] == 'true' }}
       # - uses: actions/checkout@v3
       # - uses: actions/setup-node@v3
       #   with:
