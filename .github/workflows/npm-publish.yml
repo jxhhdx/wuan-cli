@@ -40,6 +40,7 @@ jobs:
 
       - name: Publish To Npm
         run: |
+          echo $build_id
           if [ $build_id == "true" ];then
             npm publish
             NEW_VERSION=$(node -p "require('./package.json').version")
