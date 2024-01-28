@@ -35,10 +35,10 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
           echo "::set-output name=needs-publish::$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
-
+      
   publish-npm:
     needs: build
-    if: ${{ needs.build.outputs['check-version'] == 'true' }}
+    if: ${{ needs.build.outputs['needs-publish'] == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
