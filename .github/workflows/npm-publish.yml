@@ -35,15 +35,12 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
           echo "::set-output name=needs-publish::$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
-      
+          echo "::set-output name=needs-context::${{ toJson(needs) }}"
   publish-npm:
     needs: build
     # if: ${{ needs.build.outputs['needs-publish'] == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: HHH
-        run: |
-          echo ${{ toJson(needs) }}
       # - uses: actions/checkout@v3
       # - uses: actions/setup-node@v3
       #   with:
@@ -57,3 +54,8 @@ jobs:
       #     git push origin $NEW_VERSION
       #   env:
       #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Print needs context
+        run: echo "${{ env.needs-context }}"
+        shell: bash
+        env:
+          NEEDS_CONTEXT: ${{ needs.context }}
