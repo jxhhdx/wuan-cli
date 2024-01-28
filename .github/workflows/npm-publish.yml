@@ -35,7 +35,8 @@ jobs:
           LATEST_VERSION=$(npm show $CURRENT_NAME version)
           echo "Current version: $CURRENT_VERSION"
           echo "Latest version: $LATEST_VERSION"
-          echo "build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)"
+          build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)
+          echo $build_id
 
       - name: Publish To Npm
         if: ${{ env.build_id == 'true' }}
