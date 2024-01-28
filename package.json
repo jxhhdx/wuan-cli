@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linxiang07/wuan-cli.git"
+    "url": "git+https://github.com/jxhhdx/wuan-cli.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/linxiang07/wuan-cli/issues"
+    "url": "https://github.com/jxhhdx/wuan-cli/issues"
   },
-  "homepage": "https://github.com/linxiang07/wuan-cli#readme",
+  "homepage": "https://github.com/jxhhdx/wuan-cli#readme",
   "devDependencies": {
     "lerna": "^3.22.1"
   }
