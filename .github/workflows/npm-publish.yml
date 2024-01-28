@@ -37,7 +37,7 @@ jobs:
           echo "Latest version: $LATEST_VERSION"
           build_id=$(test $CURRENT_VERSION != $LATEST_VERSION && echo true || echo false)
           echo $build_id
-
+          echo "::set-env name=BUILD_ID::$build_id"
       - name: Publish To Npm
         run: |
           echo $build_id
