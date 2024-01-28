@@ -40,12 +40,12 @@ jobs:
       
   publish-npm:
     needs: build
-    # if: ${{ needs.build.outputs['needs-publish'] == 'true' }}
+    # if: ${{ needs.build_jobs.outputs['needs-publish'] == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: HHH
         run: |
-          echo ${{ needs.build['outputs']['build_id'] }}
+          echo ${{ needs.build_jobs['outputs']['build_id'] }}
       # - uses: actions/checkout@v3
       # - uses: actions/setup-node@v3
       #   with:
