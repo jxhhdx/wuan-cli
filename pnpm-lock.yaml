@@ -14,6 +14,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@wuan-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
       colors:
         specifier: ^1.4.0
         version: 1.4.0
@@ -48,6 +51,9 @@ importers:
 
   packages/init:
     dependencies:
+      '@wuan-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
       fs-extra:
         specifier: ^9.0.1
         version: 9.1.0
@@ -61,6 +67,9 @@ importers:
 
   packages/publish:
     dependencies:
+      '@wuan-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
       colors:
         specifier: ^1.4.0
         version: 1.4.0
@@ -77,6 +86,9 @@ importers:
 
   packages/replace:
     dependencies:
+      '@wuan-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
       ali-oss:
         specifier: ^6.13.2
         version: 6.20.0
