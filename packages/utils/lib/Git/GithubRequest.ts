@@ -1,29 +1,31 @@
-const axios = require('axios');
-const log = require('../log');
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const BASE_URL = 'https://api.github.com';
 
 class GithubRequest {
-  constructor(token) {
+  private token: string;
+  private service: AxiosInstance;
+
+  constructor(token: string) {
     this.token = token;
     this.service = axios.create({
       baseURL: BASE_URL,
       timeout: 5000,
     });
     this.service.interceptors.request.use(
-      config => {
+      (config: AxiosRequestConfig) => {
         config.headers['Authorization'] = `token ${this.token}`;
         return config;
       },
-      error => {
+      (error) => {
         return Promise.reject(error);
       },
     );
     this.service.interceptors.response.use(
-      response => {
+      (response: AxiosResponse) => {
         return response.data;
       },
-      error => {
+      (error) => {
         if (error.response && error.response.data) {
           return error.response;
         } else {
@@ -33,7 +35,7 @@ class GithubRequest {
     );
   }
 
-  get(url, params, headers) {
+  get(url: string, params?: any, headers?: any) {
     return this.service({
       url,
       data: params,
@@ -42,7 +44,7 @@ class GithubRequest {
     });
   }
 
-  post(url, data, headers) {
+  post(url: string, data?: any, headers?: any) {
     return this.service({
       url,
       data,
@@ -52,4 +54,4 @@ class GithubRequest {
   }
 }
 
-module.exports = GithubRequest;
+export = GithubRequest;

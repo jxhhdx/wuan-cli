@@ -1,26 +1,51 @@
-const io = require('socket.io-client');
-const get = require('lodash/get');
-const { parseMsg } = require('./parse');
-const log = require('../log');
-const getOSSProject = require('./getOSSProject');
-const inquirer = require('../inquirer');
+import io from 'socket.io-client';
+import get from 'lodash/get';
+import { parseMsg } from './parse';
+import log from '../log';
+import getOSSProject from './getOSSProject';
+import inquirer from '../inquirer';
 
 const WS_SERVER = 'ws://book.youbaobao.xyz:7002';
-const FAILED_CODE = [ 'prepare failed', 'download failed', 'build failed', 'pre-publish failed', 'publish failed' ];
+const FAILED_CODE = ['prepare failed', 'download failed', 'build failed', 'pre-publish failed', 'publish failed'];
+
+interface GitInfo {
+  remote: string;
+  name: string;
+  branch: string;
+  version: string;
+}
+
+interface CloudBuildOptions {
+  timeout?: number;
+  prod?: boolean;
+  keepCache?: boolean;
+  cnpm?: boolean;
+  buildCmd?: string;
+}
 
 class CloudBuild {
-  constructor(git, type, options = {}) {
+  private _git: GitInfo;
+  private _type: string;
+  private _timeout: number;
+  private _prod?: boolean;
+  private _keepCache?: boolean;
+  private _cnpm?: boolean;
+  private _buildCmd?: string;
+  private _socket: any;
+  private timer: NodeJS.Timeout;
+
+  constructor(git: GitInfo, type: string, options: CloudBuildOptions = {}) {
     log.verbose('CloudBuild options', options);
     this._git = git;
     this._type = type; // 发布类型，目前仅支持oss
-    this._timeout = get(options, 'timeout') || 1200 * 1000; // 默认超时时间20分钟
+    this._timeout = options.timeout || 1200 * 1000; // 默认超时时间20分钟
     this._prod = options.prod;
     this._keepCache = options.keepCache;
     this._cnpm = options.cnpm;
     this._buildCmd = options.buildCmd;
   }
 
-  timeout = (fn, timeout) => {
+  timeout = (fn: () => void, timeout: number) => {
     clearTimeout(this.timer);
     log.notice('设置任务超时时间：', `${+timeout / 1000}秒`);
     this.timer = setTimeout(fn, timeout);
@@ -37,7 +62,7 @@ class CloudBuild {
       if (ossProject.code === 0 && ossProject.data.length > 0) {
         const cover = await inquirer({
           type: 'list',
-          choices: [ { name: '覆盖发布', value: true }, { name: '放弃发布', value: false } ],
+          choices: [{ name: '覆盖发布', value: true }, { name: '放弃发布', value: false }],
           defaultValue: true,
           message: `OSS已存在 [${projectName}] 项目，是否强行覆盖发布？`,
         });
@@ -64,7 +89,7 @@ class CloudBuild {
           cnpm: this._cnpm,
           buildCmd: this._buildCmd,
         },
-        transports: [ 'websocket' ],
+        transports: ['websocket'],
       });
       this.timeout(() => {
         log.error('云构建服务创建超时，自动终止');
@@ -82,7 +107,7 @@ class CloudBuild {
           log.error('云构建服务执行超时，自动终止');
           disconnect();
         }, this._timeout);
-        socket.on(id, msg => {
+        socket.on(id, (msg: any) => {
           const parsedMsg = parseMsg(msg);
           log.success(parsedMsg.action, parsedMsg.message);
         });
@@ -92,7 +117,7 @@ class CloudBuild {
         log.success('disconnect', '云构建任务断开');
         disconnect();
       });
-      socket.on('error', (err) => {
+      socket.on('error', (err: any) => {
         log.error('云构建出错', err);
         disconnect();
         reject(err);
@@ -105,7 +130,7 @@ class CloudBuild {
     let ret = true;
     return new Promise((resolve, reject) => {
       this._socket.emit('build');
-      this._socket.on('build', (msg) => {
+      this._socket.on('build', (msg: any) => {
         const parsedMsg = parseMsg(msg);
         if (FAILED_CODE.indexOf(parsedMsg.action) >= 0) {
           log.error(parsedMsg.action, parsedMsg.message);
@@ -117,17 +142,17 @@ class CloudBuild {
           log.success(parsedMsg.action, parsedMsg.message);
         }
       });
-      this._socket.on('building', (msg) => {
+      this._socket.on('building', (msg: any) => {
         console.log(msg);
       });
       this._socket.on('disconnect', () => {
         resolve(ret);
       });
-      this._socket.on('error', (err) => {
+      this._socket.on('error', (err: any) => {
         reject(err);
       });
-    })
+    });
   };
 }
 
-module.exports = CloudBuild;
+export = CloudBuild;

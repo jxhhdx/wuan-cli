@@ -1,12 +1,12 @@
-const GitServer = require('./GitServer');
-const GiteeRequest = require('./GiteeRequest');
+import GitServer from './GitServer';
+import GiteeRequest from './GiteeRequest';
 
 class Gitee extends GitServer {
   constructor() {
     super('gitee');
   }
 
-  getTokenHelpUrl = () => {
+  getTokenHelpUrl = (): string => {
     return 'https://gitee.com/profile/personal_access_tokens';
   };
 
@@ -26,39 +26,39 @@ class Gitee extends GitServer {
     });
   };
 
-  setToken = (token) => {
+  setToken = (token: string) => {
     this.request = new GiteeRequest(token);
   };
 
-  getRepo = (owner, repo) => {
+  getRepo = (owner: string, repo: string) => {
     return this.request.get(`/repos/${owner}/${repo}`).then(response => {
       return this.handleResponse(response);
     });
   };
 
-  createRepo = (repo) => {
+  createRepo = (repo: string) => {
     return this.request.post('/user/repos', {
       name: repo,
     });
   };
 
-  createOrgRepo = (repo, login) => {
+  createOrgRepo = (repo: string, login: string) => {
     return this.request.post(`/orgs/${login}/repos`, {
       name: repo,
     });
   };
 
-  getRemote = (login, repo) => {
+  getRemote = (login: string, repo: string) => {
     return `git@gitee.com:${login}/${repo}.git`;
   };
 
-  getSSHKeysUrl = () => {
+  getSSHKeysUrl = (): string => {
     return 'https://gitee.com/profile/sshkeys';
   };
 
-  getSSHKeysHelpUrl = () => {
+  getSSHKeysHelpUrl = (): string => {
     return 'https://gitee.com/help/articles/4191';
   };
 }
 
-module.exports = Gitee;
+export = Gitee;

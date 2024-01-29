@@ -1,6 +1,14 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-function writeFile(path, data, { rewrite = true } = {}) {
+interface WriteFileOptions {
+  rewrite?: boolean;
+}
+
+interface ReadFileOptions {
+  toJson?: boolean;
+}
+
+function writeFile(path: string, data: string | Buffer, { rewrite = true }: WriteFileOptions = {}): boolean {
   if (fs.existsSync(path)) {
     if (rewrite) {
       fs.writeFileSync(path, data);
@@ -14,22 +22,21 @@ function writeFile(path, data, { rewrite = true } = {}) {
   }
 }
 
-function readFile(path, options = {}) {
+function readFile(path: string, options: ReadFileOptions = {}): string | Buffer | null {
   if (fs.existsSync(path)) {
     const buffer = fs.readFileSync(path);
     if (buffer) {
       if (options.toJson) {
-        return buffer.toJSON();
+        return buffer.toJSON() as unknown as Buffer;
       } else {
         return buffer.toString();
       }
     }
-  } else {
-    return null;
-  }
+  } 
+  return null;
 }
 
-module.exports = {
+export {
   readFile,
   writeFile,
 };

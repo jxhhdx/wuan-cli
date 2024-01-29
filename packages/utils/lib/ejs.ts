@@ -1,19 +1,27 @@
-const path = require('path');
-const glob = require('glob');
-const ejs = require('ejs');
-const fse = require('fs-extra');
-const get = require('lodash/get');
+import * as path from 'path';
+import glob from 'glob';
+import * as ejs from 'ejs';
+import * as fse from 'fs-extra';
+import get from 'lodash/get';
 
-const log = require('./log');
+import * as log from './log';
 
-module.exports = async function(dir, options = {}, extraOptions = {}, diableFormatDotFile = false) {
+interface RenderOptions {
+  ignore?: string[];
+}
+
+interface ExtraOptions {
+  ignore?: string[];
+}
+
+export default async function renderFiles(dir: string, options: RenderOptions = {}, extraOptions: ExtraOptions = {}, disableFormatDotFile: boolean = false): Promise<void> {
   const ignore = get(extraOptions, 'ignore');
   log.verbose('ignore', ignore);
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     glob('**', {
       cwd: dir,
       nodir: true,
-      ignore: ignore || '**/node_modules/**',
+      ignore: ignore || ['**/node_modules/**'],
     }, (err, files) => {
       if (err) {
         return reject(err);
@@ -23,7 +31,7 @@ module.exports = async function(dir, options = {}, extraOptions = {}, diableForm
 
       Promise.all(files.map((file) => {
         const filepath = path.join(dir, file);
-        return renderFile(filepath, options, diableFormatDotFile);
+        return renderFile(filepath, options, disableFormatDotFile);
       })).then(() => {
         resolve();
       }).catch((err) => {
@@ -31,17 +39,16 @@ module.exports = async function(dir, options = {}, extraOptions = {}, diableForm
       });
     });
   });
-};
+}
 
-function renderFile(filepath, options, diableFormatDotFile) {
+function renderFile(filepath: string, options: RenderOptions, disableFormatDotFile: boolean): Promise<string> {
   let filename = path.basename(filepath);
 
   if (filename.indexOf('.png') !== -1 || filename.indexOf('.jpg') !== -1) {
-    // console.log('renderFile:', filename);
-    return Promise.resolve();
+    return Promise.resolve(filepath);
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     ejs.renderFile(filepath, options, (err, result) => {
       if (err) {
         return reject(err);
@@ -57,7 +64,7 @@ function renderFile(filepath, options, diableFormatDotFile) {
         fse.removeSync(filepath);
       }
 
-      if (!diableFormatDotFile && /^_/.test(filename)) {
+      if (!disableFormatDotFile && /^_/.test(filename)) {
         filename = filename.replace(/^_/, '.');
         fse.removeSync(filepath);
       }

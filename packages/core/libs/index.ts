@@ -1,26 +1,21 @@
-const fs = require('fs');
-const path = require('path');
-const fse = require('fs-extra');
-const program = require('commander');
-const colors = require('colors/safe');
-const userHome = require('user-home');
-const semver = require('semver');
-const { log, npm, Package, exec, locale } = require('@wuan-cli/utils');
-const packageConfig = require('../package');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as fse from 'fs-extra';
+import * as program from 'commander';
+import * as colors from 'colors/safe';
+import * as userHome from 'user-home';
+import * as semver from 'semver';
+import { log, npm, Package, exec, locale } from '@wuan-cli/utils';
+import packageConfig from '../package';
 
-const {
+import {
   LOWEST_NODE_VERSION,
   DEFAULT_CLI_HOME,
   NPM_NAME,
   DEPENDENCIES_PATH,
-} = require('../libs/const');
+} from '../libs/const';
 
-module.exports = cli;
-
-let args;
-let config;
-
-async function cli() {
+export default async function cli() {
   try {
     await prepare();
     registerCommand();

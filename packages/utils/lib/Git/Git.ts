@@ -1,21 +1,21 @@
-const fs = require('fs');
-const path = require('path');
-const fse = require('fs-extra');
-const SimpleGit = require('simple-git');
-const userHome = require('user-home');
-const semver = require('semver');
-const log = require('../log');
-const inquirer = require('../inquirer');
-const terminalLink = require('../terminalLink');
-const spinner = require('../spinner');
-const Github = require('./Github');
-const Gitee = require('./Gitee');
-const CloudBuild = require('../Build/CloudBuild');
-const { readFile, writeFile } = require('../file');
-const ComponentRequest = require('./ComponentRequest');
-const getOSSFile = require('../Build/getOSSFile');
-const get = require('lodash/get');
-const axios = require('axios');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as fse from 'fs-extra';
+import SimpleGit from 'simple-git';
+import userHome from 'user-home';
+import semver from 'semver';
+import log from '../log';
+import inquirer from '../inquirer';
+import terminalLink from '../terminalLink';
+import spinner from '../spinner';
+import Github from './Github';
+import Gitee from './Gitee';
+import CloudBuild from '../Build/CloudBuild';
+import { readFile, writeFile } from '../file';
+import * as ComponentRequest from './ComponentRequest';
+import getOSSFile from '../Build/getOSSFile';
+import get from 'lodash/get';
+import axios from 'axios';
 
 const DEFAULT_CLI_HOME = '.wuan-cli';
 const GIT_ROOT_DIR = '.git';
@@ -63,7 +63,7 @@ const GIT_PUBLISH_TYPE = [ {
   value: 'oss',
 } ];
 
-function createGitServer(gitServer) {
+function createGitServer(gitServer: string | undefined): Github | Gitee | null {
   if (gitServer === GITHUB) {
     return new Github();
   } else if (gitServer === GITEE) {
@@ -76,6 +76,25 @@ function createGitServer(gitServer) {
  * Git 操作基类
  */
 class Git {
+  git: any;
+  name: string;
+  version: string;
+  dir: string;
+  owner: string;
+  login: null;
+  repo: null;
+  homePath: string | undefined;
+  refreshToken: boolean | undefined;
+  refreshOwner: boolean | undefined;
+  refreshServer: boolean | undefined;
+  sshUser: string | undefined;
+  sshIp: string | undefined;
+  sshPath: string | undefined;
+  gitServer: Github | Gitee | null;
+  prod: boolean | undefined;
+  keepCache: boolean | undefined;
+  cnpm: boolean | undefined;
+  buildCmd: string | undefined;
   /**
    * 构造函数
    *
@@ -91,10 +110,38 @@ class Git {
    * @param sshIp 远程服务器IP
    * @param sshPath 远程服务器路径
    */
-  constructor({ dir, name, version }, {
-    cliHome, refreshToken, refreshOwner, refreshServer,
-    sshUser, sshIp, sshPath, prod, keepCache, cnpm, buildCmd,
-  }) {
+  constructor(
+    {
+      dir,
+      name,
+      version,
+    }: { dir: string; name: string; version: string },
+    {
+      cliHome,
+      refreshToken,
+      refreshOwner,
+      refreshServer,
+      sshUser,
+      sshIp,
+      sshPath,
+      prod,
+      keepCache,
+      cnpm,
+      buildCmd,
+    }: {
+      cliHome?: string;
+      refreshToken?: boolean;
+      refreshOwner?: boolean;
+      refreshServer?: boolean;
+      sshUser?: string;
+      sshIp?: string;
+      sshPath?: string;
+      prod?: boolean;
+      keepCache?: boolean;
+      cnpm?: boolean;
+      buildCmd?: string;
+    }
+  ) {
     this.git = SimpleGit(dir);
     this.name = name;
     this.version = version;
@@ -146,8 +193,8 @@ class Git {
   };
 
   // 创建缓存目录
-  createPath = (file) => {
-    const rootDir = path.resolve(this.homePath, GIT_ROOT_DIR);
+  createPath = (file: string) => {
+    const rootDir = path.resolve(this.homePath as string, GIT_ROOT_DIR);
     const filePath = path.resolve(rootDir, file);
     fse.ensureDirSync(rootDir);
     return filePath;
@@ -163,7 +210,7 @@ class Git {
         choices: GIT_SERVER_TYPE,
         message: '请选择您想要托管的Git平台',
       });
-      writeFile(gitServerPath, gitServer);
+      gitServer && writeFile(gitServerPath, gitServer);
       log.success('git server写入成功', `${gitServer} -> ${gitServerPath}`);
     } else {
       log.success('git server获取成功', gitServer);
@@ -769,4 +816,4 @@ pnpm-debug.log*
   };
 }
 
-module.exports = Git;
+export default Git

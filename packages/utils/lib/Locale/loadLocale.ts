@@ -1,5 +1,7 @@
+import getEnvLocale from './getEnvLocale';
+
 function loadLocale() {
-  const locale = require('./getEnvLocale');
+  const locale = getEnvLocale();
   if (locale) {
     const localeShortName = locale.split('.')[0].toLocaleLowerCase();
     return require(`./${localeShortName}`);
@@ -8,4 +10,4 @@ function loadLocale() {
   }
 }
 
-module.exports = loadLocale();
+export default loadLocale();

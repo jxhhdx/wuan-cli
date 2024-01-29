@@ -1,8 +1,9 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "baseUrl": "./"
-  }
+    "outDir": "./dist",
+    "rootDir": "./lib",
+    "esModuleInterop": true
+  },
+  "include": ["lib"]
 }

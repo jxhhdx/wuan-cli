@@ -1,28 +1,30 @@
-const axios = require('axios');
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const BASE_URL = 'http://book.youbaobao.xyz:7002';
 
-const service = axios.create({
+interface Service extends AxiosInstance {}
+
+const service: Service = axios.create({
   baseURL: BASE_URL,
   timeout: 5000,
 });
 
 service.interceptors.request.use(
-  config => {
+  (config: AxiosRequestConfig) => {
     return config;
   },
-  error => {
+  (error: any) => {
     return Promise.reject(error);
   },
 );
 
 service.interceptors.response.use(
-  response => {
+  (response: AxiosResponse) => {
     return response.data;
   },
-  error => {
+  (error: any) => {
     return Promise.reject(error);
   },
 );
 
-module.exports = service;
+export default service;
