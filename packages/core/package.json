@@ -1,6 +1,6 @@
 {
   "name": "@wuan-cli/core",
-  "version": "0.0.1",
+  "version": "2.0.16",
   "description": "",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
@@ -23,6 +23,18 @@
     "access": "public"
   },
   "devDependencies": {
-    "father": "^4.4.0"
+    "father": "^4.4.0",
+    "mocha": "^8.4.0"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^6.2.1",
+    "dotenv": "^8.6.0",
+    "minimist": "^1.2.8",
+    "npminstall": "^4.11.0",
+    "root-check": "^1.0.0",
+    "semver": "^7.5.4",
+    "user-home": "^2.0.0",
+    "@wuan-cli/utils": "workspace:*"
   }
 }
